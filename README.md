@@ -40,7 +40,7 @@ The project is organized into multiple Python files for better modularity and re
 
 1. Clone the repository:
     ```bash
-    git clone https://github.com/yourusername/sanecoin.git
+    git clone https://github.com/Nikosane/sanecoin.git
     cd sanecoin
     ```
 
