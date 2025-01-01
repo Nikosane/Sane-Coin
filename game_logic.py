@@ -263,9 +263,12 @@ def generate_keys(num_keys=3):
         keys.append(key)
     return keys
 
-def encrypt_chunk(chunk, key):
-    """Encrypt a chunk using a simple XOR encryption (for illustration)."""
-    encrypted = ''.join(chr(ord(c) ^ ord(key[i % len(key)])) for i, c in enumerate(chunk))
+def encrypt_chunk(chunk, key, encryption_type):
+    """Encrypt a chunk using the given key."""
+    if encryption_type == "public":
+        encrypted = ''.join(chr(ord(c) ^ ord(key[i % len(key)])) for i, c in enumerate(chunk))
+    elif encryption_type == "private":
+        encrypted = ''.join(chr(ord(c) ^ ord(program_key[i % len(program_key)])) for i, c in enumerate(chunk))
     return encrypted
 
 def start_game(words):
@@ -357,7 +360,7 @@ def decrypt_chunk(encrypted_chunk, key):
         return None
 
 
-def mine_logic(selected_chunks, encrypted_chunks, desired_word):
+def mine_logic(selected_chunks, encrypted_chunks, desired_word, keys, program_key):
     """Process the selected chunks and attempt to find the desired word."""
     print("\n========== Mine Process Begins ==========")
 
