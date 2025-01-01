@@ -357,45 +357,57 @@ def decrypt_chunk(encrypted_chunk, key):
         return None
 
 
-def mine_logic(selected_chunks, encrypted_chunks, desired_word, keys, program_key):
+def mine_logic(selected_chunks, encrypted_chunks, desired_word):
     """Process the selected chunks and attempt to find the desired word."""
     print("\n========== Mine Process Begins ==========")
+
+    # Track key usage
+    key_usage_count = {"key_1": 0, "key_2": 0, "key_3": 0}
 
     # Iterate through the chunks selected by the user
     for chunk_index in selected_chunks:
         encrypted_chunk = encrypted_chunks[chunk_index - 1]  # Get the encrypted chunk
         print(f"\nAttempting to decrypt Chunk {chunk_index}...")
 
-        # Try all three keys for decryption
+        # Attempt each key (1, 2, and 3) until successful decryption or no more keys to try
         for key_attempt in range(3):
-            current_key = keys[key_attempt] if key_attempt < 3 else program_key
-            print(f"Attempting key {key_attempt + 1}: {current_key}")
+            # Determine the current key being used
+            user_key = f"key_{key_attempt + 1}"
+
+            # Check if the key has been used more than 4 times
+            if key_usage_count[user_key] >= 4:
+                print(f"\nYou have exceeded the limit of 4 uses for {user_key}. Please choose another key.")
+                continue  # Skip to the next key if this one has been used more than 4 times
             
-            # Decrypt the chunk using the current key
-            decrypted_chunk = decrypt_chunk(encrypted_chunk, current_key)
+            # Increment key usage count
+            key_usage_count[user_key] += 1
+
+            # Prompt the user for the current key
+            user_key_input = input(f"Enter {user_key} to decrypt Chunk {chunk_index}: ").strip()
+
+            # Decrypt the chunk using the provided key
+            decrypted_chunk = decrypt_chunk(encrypted_chunk, user_key_input)
             
             if decrypted_chunk:
                 print(f"Chunk {chunk_index} decrypted successfully!")
-
                 # Check if the desired word is in the decrypted content
                 if desired_word.lower() in decrypted_chunk.lower():
                     print(f"\n🎉 Congratulations! The desired word '{desired_word}' was found in Chunk {chunk_index}.")
                     print("💰 You win the Sane Coin! 💰")
-                    return
+                    return  # Exit after success
+                
                 else:
                     print(f"The desired word '{desired_word}' was not found in Chunk {chunk_index}.")
-                break  # Exit the loop once decryption is successful
-            else:
-                print("Invalid decryption. Please try again.")
-        
-        # If all 3 keys fail to decrypt the chunk, inform the user
-        print(f"\nYou have failed to decrypt Chunk {chunk_index} after 3 attempts.")
-        break  # End the game if all keys have been used for this chunk and no success
+                    break  # Continue to next key if desired word is not found in this chunk
+
+        # If the loop completes and no key worked, reveal where the word was
+        if key_usage_count["key_1"] + key_usage_count["key_2"] + key_usage_count["key_3"] == 9:
+            print(f"\nYou have tried all keys for Chunk {chunk_index} and failed to decrypt it.")
+            # Reveal the chunk where the word was found
+            print(f"\nThe desired word '{desired_word}' was found in Chunk {chunk_index}.")
+            break  # End the game after revealing the correct chunk
     
-    # If no chunk has been successfully decrypted
-    print("\nUnfortunately, you lost the game.")
-    print("The correct key was:", program_key)
-    print("The word was found in one of the chunks.")
+    print("\nUnfortunately, none of the keys could decrypt the selected chunks to find the desired word.")
     print("Better luck next time!")
 
 
