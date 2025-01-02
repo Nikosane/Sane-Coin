@@ -1,4 +1,4 @@
-from game_logic import start_game 
+from game_logic import play_game 
 from utils import load_words
 
 def main():
@@ -8,7 +8,7 @@ def main():
 
     
     # Start the game logic
-    start_game(words)
+    play_game()
 
 if __name__ == "__main__":
     main()
