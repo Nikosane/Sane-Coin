@@ -1,99 +1,120 @@
 import random
 import os
-import time
-from pyfiglet import figlet_format
 
-# Helper Functions
-def slow_print(text, delay=0.05):
-    for char in text:
-        print(char, end='', flush=True)
-        time.sleep(delay)
-    print()
-
-def clear_screen():
-    os.system('cls' if os.name == 'nt' else 'clear')
-
-# Load words from words.txt
-def load_words():
+def load_words(file_path="words.txt"):
+    """Load words from a file and return as a list."""
     try:
-        with open('words.txt', 'r') as file:
-            words = [line.strip() for line in file.readlines() if len(line.strip()) >= 6]
+        with open(file_path, 'r') as f:
+            words = [line.strip() for line in f]
+        if len(words) < 600:
+            raise ValueError("The file must contain at least 600 unique words.")
         return words
     except FileNotFoundError:
-        print("Error: 'words.txt' file not found. Make sure it is in the same directory.")
+        print("Error: 'words.txt' file not found.")
+        exit()
+    except ValueError as e:
+        print(f"Error: {e}")
         exit()
 
-def split_into_chunks(word):
-    chunk_size = len(word) // 6
-    chunks = [word[i:i+chunk_size] for i in range(0, 6 * chunk_size, chunk_size)]
-    return chunks
+def get_random_words(word_list, count=10):
+    """Get a random sample of words from the list."""
+    return random.sample(word_list, count)
+
+def chunkify_words(word_list, chunk_size=100):
+    """Divide the list into 6 chunks of specified size."""
+    random.shuffle(word_list)
+    return [word_list[i:i + chunk_size] for i in range(0, chunk_size * 6, chunk_size)]
 
 def generate_keys():
-    return [f"key{i}" for i in range(1, 7)]
+    """Generate 6 random keys."""
+    return [f"key{i+1}" for i in range(6)]
 
-def associate_keys_with_chunks(keys, chunks):
-    random.shuffle(keys)
-    random.shuffle(chunks)
-    return dict(zip(keys, chunks))
+def encrypt_chunks(chunks, keys):
+    """Encrypt chunks by associating each with a key."""
+    encrypted_chunks = {}
+    for i, chunk in enumerate(chunks):
+        encrypted_chunks[keys[i]] = chunk
+    return encrypted_chunks
 
-# Main Game Logic
-def play_game():
-    clear_screen()
-    print(figlet_format("Chunk Encryption", font="slant"))
+def decrypt_chunk(key, encrypted_chunks):
+    """Decrypt a chunk using the key."""
+    return encrypted_chunks.get(key, None)
 
+def start_game():
+    print("Welcome to the Word Encryption Game!")
+
+    # Load words
     words = load_words()
-    slow_print("Welcome to the Chunk Encryption Game!\n")
 
-    slow_print("Select a word from the list to play:\n")
-    for idx, word in enumerate(words[:10], start=1):
-        print(f"{idx}. {word}")
+    # Word selection phase
+    while True:
+        print("\nSelect a word from the list to play:")
+        random_words = get_random_words(words)
+        for i, word in enumerate(random_words, start=1):
+            print(f"{i}. {word}")
+        print("0. Pass (Get new set of words)")
 
-    selected_word = None
-    while not selected_word:
         try:
             choice = int(input("Enter the number corresponding to your chosen word: "))
-            if 1 <= choice <= len(words[:10]):
-                selected_word = words[choice - 1]
+            if choice == 0:
+                continue  # Get new set of words
+            elif 1 <= choice <= 10:
+                desired_word = random_words[choice - 1]
+                print(f"You selected: {desired_word}\n")
+                break
             else:
-                print("Invalid choice. Please select a valid number.")
+                print("Invalid choice. Please select again.")
         except ValueError:
             print("Invalid input. Please enter a number.")
 
-    slow_print(f"You selected: {selected_word}\n")
+    # Chunk creation phase
+    chunks = chunkify_words(words)
+    print("6 chunks of words have been created.")
 
-    # Split word into chunks
-    chunks = split_into_chunks(selected_word)
-
-    # Generate keys and associate them randomly with chunks
+    # Key generation phase
     keys = generate_keys()
-    key_chunk_map = associate_keys_with_chunks(keys, chunks)
+    encrypted_chunks = encrypt_chunks(chunks, keys)
+    print("6 keys have been generated and associated with chunks.")
 
-    slow_print("The word has been split into 6 chunks and encrypted with random keys.\n")
-    slow_print("Now, select 3 keys to decrypt their corresponding chunks.\n")
-
-    random.shuffle(keys)  # Shuffle keys for user selection
-
-    print("Available keys:")
-    for key in keys:
-        print(key, end='  ')
-    print()
+    # User selection phase
+    print("\nChunks are labeled as Chunk1 to Chunk6, and keys as Key1 to Key6.")
+    selected_chunks = []
+    for i in range(3):
+        while True:
+            try:
+                chunk_choice = int(input(f"Select Chunk {i+1} (1-6): "))
+                if 1 <= chunk_choice <= 6 and chunk_choice not in selected_chunks:
+                    selected_chunks.append(chunk_choice)
+                    break
+                else:
+                    print("Invalid choice or chunk already selected. Try again.")
+            except ValueError:
+                print("Invalid input. Please enter a number.")
 
     selected_keys = []
-    while len(selected_keys) < 3:
-        key = input(f"Select key {len(selected_keys) + 1}: ").strip()
-        if key in keys and key not in selected_keys:
-            selected_keys.append(key)
-        else:
-            print("Invalid or duplicate key. Please try again.")
+    for i in range(3):
+        while True:
+            try:
+                key_choice = int(input(f"Select Key {i+1} (1-6): "))
+                if 1 <= key_choice <= 6 and key_choice not in selected_keys:
+                    selected_keys.append(keys[key_choice - 1])
+                    break
+                else:
+                    print("Invalid choice or key already selected. Try again.")
+            except ValueError:
+                print("Invalid input. Please enter a number.")
 
-    slow_print("\nDecrypting selected keys...\n")
-
+    # Decryption phase
+    print("\nDecrypting selected chunks...")
     for key in selected_keys:
-        chunk = key_chunk_map[key]
-        slow_print(f"{key} decrypts to chunk: {chunk}")
-
-    slow_print("\nThe game is based on luck. Did you uncover meaningful parts of the word?\n")
-    slow_print("Thank you for playing!\n")
+        print(f"Using {key}...")
+        for chunk_num in selected_chunks:
+            decrypted_chunk = decrypt_chunk(key, encrypted_chunks)
+            if decrypted_chunk and desired_word in decrypted_chunk:
+                print(f"Success! The desired word '{desired_word}' was found in Chunk{chunk_num}.")
+                return
+    
+    print("Game Over! The desired word could not be found with the selected keys.")
 
 if __name__ == "__main__":
-    play_game()
+    start_game()
