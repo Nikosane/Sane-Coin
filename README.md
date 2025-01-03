@@ -1,86 +1,137 @@
-# SaneCoin: A Decryption-Based Coin Collection Game
+# Sane Coins Mine
 
-SaneCoin is a Python-based game where users can collect "SaneCoins" by decrypting encrypted chunks of text. The game involves selecting a predefined word from randomly encrypted chunks, which will grant a coin if found. The project showcases key generation, text encryption/decryption, and a word-selection-based game, which offers a fun challenge to the players.
-
-## Project Overview
-
-In this game:
-- The user will be provided with 6 chunks of text, each containing 100 words.
-- Three of these chunks are encrypted with a randomly generated key, while the other three are encrypted using a default encryption key that is only available to the program.
-- The user needs to select one chunk to decrypt using the correct key and then find a desired word from the chunk.
-- The user will select a random word from the list of available words and claim it as the desired word they want to search for.
-- If the correct word is found in the selected chunk, the player earns one SaneCoin.
-
-## Key Features
-- **Text Chunk Creation**: 6 chunks of 100 words each, randomly generated from a predefined word list.
-- **Random Word Selection**: A random word is selected from the chunks, and the user must claim it to proceed.
-- **Encryption**: A basic encryption algorithm to encrypt three chunks using a random key and three chunks using a default key.
-- **Key Generation**: Random keys consisting of 3 letters and 2 numbers.
-- **Gameplay Logic**: User selects and decrypts chunks, then attempts to find the correct word to earn coins.
-
-## File Structure
-
-The project is organized into multiple Python files for better modularity and readability:
-
-- `main.py`: Entry point of the game where everything ties together and the game starts.
-- `game_logic.py`: Contains the main game logic, managing chunk selection, decryption attempts, and coin reward.
-- `text_file_processor.py`: Processes the `words.txt` file to create the 6 chunks of words for the game.
-- `key_generator.py`: Generates the random encryption keys (user-specific and default).
-- `encryption.py`: Handles the encryption and decryption logic using the generated keys.
-- `word_selector.py`: Handles the selection of a random word from the word list and allows the user to select their desired word.
-- `utils.py`: Contains utility functions like word validation, encryption helpers, etc.
-- `words.txt`: A text file containing 600 unique English words, used to generate the text chunks for the game.
-
-## Requirements
-
-- Python 3.x
-- Random and os modules (standard Python libraries)
-  
-## Setup
-
-1. Clone the repository:
-    ```bash
-    git clone https://github.com/Nikosane/sanecoin.git
-    cd sanecoin
-    ```
-
-2. Populate the `words.txt` file with 600 unique English words. Make sure they are legitimate words.
-
-3. Run the game:
-    ```bash
-    python main.py
-    ```
-
-4. The game will start, and you will be prompted to select a chunk to decrypt. Find the correct word to earn a SaneCoin!
-
-## How It Works
-
-- **Step 1: Word Selection**: The user is asked to select a random word from the 600 available words. This word is the one they will search for in the encrypted chunks.
-  
-- **Step 2: Chunk Generation**: The 600 words from `words.txt` are randomly selected and divided into 6 chunks, each containing 100 words. Three chunks are encrypted with the random key, and the other three are encrypted using the default encryption key.
-
-- **Step 3: Decryption**: The user selects one chunk to decrypt, but only 3 out of the 6 chunks can be decrypted using the random key.
-
-- **Step 4: Finding the Desired Word**: After decrypting the selected chunk, the user must search for the word they selected earlier. If the word is found, they earn 1 SaneCoin.
-
-- **Step 5: Game Over**: The game ends when the user finds the desired word and earns the coin.
-
-## Example Flow
-
-1. The user selects the desired word from a random list of 600 words.
-2. The game presents 6 chunks, out of which 3 are encrypted with the program’s key, and 3 are encrypted with a default key.
-3. The user selects one chunk to decrypt.
-4. If the user successfully decrypts the chunk and finds the desired word, they earn 1 SaneCoin.
-
-## Contributions
-
-Feel free to fork the repository, open issues, and create pull requests. Contributions are always welcome!
-
-## License
-
-This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
+## Introduction
+Sane Coins Mine is an engaging command-line game that combines elements of randomness, encryption, and strategy. Players navigate through encrypted chunks of data using keys to locate their chosen word, referred to as "mining the Sane Coin." This game challenges players' luck and strategy in a fun and interactive way.
 
 ---
 
-**Note**: The default encryption method used in this project is a basic cipher for the sake of simplicity. You can explore more advanced encryption techniques for further enhancement.
+## Features
+
+- **Word Selection**:
+  - A `words.txt` file contains at least 600 unique words.
+  - At the start of the game, players are presented with 10 random words.
+  - Players can either select a word or pass to get a new set of 10 words.
+
+- **Chunk Creation**:
+  - The words from the file are divided into 6 randomized chunks, each containing 100 words.
+  - Chunks are shuffled for fairness.
+
+- **Key Generation**:
+  - Six unique encryption keys (`Key1` to `Key6`) are generated and associated with chunks.
+
+- **Player Choices**:
+  - Players select 3 chunks and 3 keys.
+  - Both strategy and luck play a role in these selections.
+
+- **Decryption Challenge**:
+  - Selected keys are used to decrypt chunks to find the chosen word.
+  - If the desired word is found, the player wins and "mines the Sane Coin."
+  - If all keys are exhausted without success, the game ends.
+
+---
+
+## Installation
+
+1. **Clone the Repository**:
+   ```bash
+   git clone https://github.com/yourusername/sane-coins-mine.git
+   cd sane-coins-mine
+   ```
+
+2. **Install Dependencies**:
+   - Ensure Python 3.7 or higher is installed.
+   - Install the `pyfiglet` library:
+     ```bash
+     pip install pyfiglet
+     ```
+
+3. **Prepare the `words.txt` File**:
+   - Add a file named `words.txt` in the project directory containing at least 600 unique words, one per line.
+
+---
+
+## How to Play
+
+1. **Start the Game**:
+   ```bash
+   python sane_coins_mine.py
+   ```
+
+2. **Gameplay Flow**:
+   - A welcome screen introduces the game.
+   - Players select a word from a random set of 10 words or pass to get a new set.
+   - The game creates 6 randomized chunks of words and generates 6 encryption keys.
+   - Players choose 3 chunks and 3 keys.
+   - Selected keys decrypt the chosen chunks, searching for the selected word.
+   - Feedback is provided, declaring success or failure.
+
+3. **Win Condition**:
+   - If the selected word is found during decryption, the player wins and "mines the Sane Coin."
+
+---
+
+## Example Gameplay Session
+
+- **Welcome Screen**:
+  ```
+  Sane Coins Mine
+  Welcome to Sane Coins Mine!
+  ```
+
+- **Word Selection**:
+  ```
+  Select a word from the list to play:
+  1. apple
+  2. orange
+  3. banana
+  ...
+  0. Pass (Get new set of words)
+  ```
+
+- **Chunk and Key Selection**:
+  ```
+  Select Chunk 1 (1-6): 2
+  Chunk2 selected.
+  Select Key 1 (1-6): 3
+  Key3 selected.
+  ```
+
+- **Decryption Phase**:
+  ```
+  Decrypting selected chunks...
+  Using Key3...
+  Success! The desired word 'apple' was found in Chunk2.
+  Congratulations! You mined the Sane Coin!
+  ```
+
+---
+
+## Project Structure
+
+```plaintext
+sane-coins-mine/
+├── sane_coins_mine.py  # Main game script
+├── words.txt           # Word list file (to be created by user)
+├── README.md           # Project documentation
+```
+
+---
+
+## Requirements
+
+- Python 3.7+
+- `pyfiglet` library
+- A `words.txt` file with at least 600 unique words
+
+---
+
+## Contributing
+
+Contributions are welcome! Please fork the repository and create a pull request for improvements or bug fixes.
+
+---
+
+## License
+
+This project is licensed under the MIT License. See the LICENSE file for details.
 
