@@ -34,7 +34,7 @@ Sane Coins Mine is an engaging command-line game that combines elements of rando
 
 1. **Clone the Repository**:
    ```bash
-   git clone https://github.com/yourusername/sane-coins-mine.git
+   git clone https://github.com/Nikosane/sane-coins-mine.git
    cd sane-coins-mine
    ```
 
@@ -103,17 +103,6 @@ Sane Coins Mine is an engaging command-line game that combines elements of rando
   Success! The desired word 'apple' was found in Chunk2.
   Congratulations! You mined the Sane Coin!
   ```
-
----
-
-## Project Structure
-
-```plaintext
-sane-coins-mine/
-├── sane_coins_mine.py  # Main game script
-├── words.txt           # Word list file (to be created by user)
-├── README.md           # Project documentation
-```
 
 ---
 
